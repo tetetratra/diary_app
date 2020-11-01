@@ -1,22 +1,34 @@
-<h1>日記一覧</h1>
-
-<p><%= link_to('今日の日記', note_path(@today_note.id))%></p>
-<%= form_for(@today_note) do |f| %>
-  <%= f.text_area(:text, size: "60x10") %>
-  <br>
-  <%= f.submit %>
-<% end %>
-
-<hr>
-
 <ul>
   <% @notes.each do |n| %>
     <% wd = %w[日 月 火 水 木 金 土][n.date.wday] %>
-    <li><%= link_to("#{n.date} (#{wd})", note_path(n))%></li>
-    <ul>
-      <% n.text.to_s.lines.split(&:blank?).map(&:join).reject(&:blank?).each do |t| %>
-        <li><%= t %></li>
+    <li id="<%= n.date %>"><%= link_to("#{n.date} (#{wd})", notes_path(date: n.date, anchor: n.date.to_s))%></li>
+    <% if n.date == @date %>
+      <%= form_for(@note) do |f| %>
+        <%= f.text_area(:text, size: "180x10") %><br>
+        <%= f.submit %>
       <% end %>
-    </ul>
+    <% else %>
+      <ul>
+        <% n.text.to_s.lines.split(&:blank?).map(&:join).reject(&:blank?).map { |t| h(t).gsub(/\R/, '<br>') }.each do |t| %>
+          <li><%= raw(t)%></li>
+        <% end %>
+      </ul>
+    <% end %>
   <% end %>
 </ul>
+
+<ul class='menu'>
+  <li><%= link_to('去年', notes_path(date: Date.new(@date.year - 1, 12, 31))) %></li>
+  <% @month_range.each do |m|%>
+    <li><%= link_to("#{m}月", notes_path(date: Date.new(@note.date.year, m, 1))) %></li>
+  <% end %>
+  <li><%= link_to('来年', notes_path(date: Date.new(@date.year + 1, 1, 1))) %></li>
+</ul>
+
+<style>
+ul.menu > li {
+  padding: 5px;
+  border:1px solid black;
+  display: inline-block;
+}
+</style>
