@@ -1,7 +1,16 @@
 create_table "notes", force: :cascade do |t|
   t.text "text"
   t.date "date"
+  t.integer "user_id"
+  t.boolean "private"
   t.datetime "updated_at", precision: 6, null: false
   t.datetime "created_at", precision: 6, null: false
 end
 
+create_table "users", force: :cascade do |t|
+  t.string "name"
+  t.string "password_digest"
+  t.string "remember_digest"
+  t.datetime "updated_at", precision: 6, null: false
+  t.datetime "created_at", precision: 6, null: false
+end

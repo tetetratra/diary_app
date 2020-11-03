@@ -1,34 +1,83 @@
+<h1><%= link_to("#{@current_user.name}の日記", notes_path)%></h1>
+<% flash.reject { |k,v| k == 'edit_success' }.each do |message_type, message| %>
+  <p class="alert alert-<%= message_type %>"><%= message %></p>
+<% end %>
+
+<%= link_to('今日の日記へ', notes_path(date: 'today', edit: true, anchor: 'today')) %>
+
 <ul>
-  <% @notes.each do |n| %>
-    <% wd = %w[日 月 火 水 木 金 土][n.date.wday] %>
-    <li id="<%= n.date %>"><%= link_to("#{n.date} (#{wd})", notes_path(date: n.date, anchor: n.date.to_s))%></li>
-    <% if n.date == @date %>
+  <% @notes.each do |note| %>
+    <% wd = %w[日 月 火 水 木 金 土][note.date.wday] %>
+    <li id="<%= note.date %>">
+      <span id="<%= note.date == Date.today ? 'today' : '' %>">
+        <%= link_to("#{note.date} (#{wd})", notes_path(date: note.date, edit: true, anchor: note.date.to_s))%>
+      </span>
+    </li>
+    <% if note.date == @date && @edit %>
       <%= form_for(@note) do |f| %>
-        <%= f.text_area(:text, size: "180x10") %><br>
-        <%= f.submit %>
+        <%= f.text_area(:text, rows: "#{f.object.text.to_s.lines.size + 2}", cols: '100%') %>
+        <%= f.submit('✔︎') %>
+        <%= flash[:edit_success] %>
       <% end %>
     <% else %>
       <ul>
-        <% n.text.to_s.lines.split(&:blank?).map(&:join).reject(&:blank?).map { |t| h(t).gsub(/\R/, '<br>') }.each do |t| %>
-          <li><%= raw(t)%></li>
+        <% note.text.to_s.lines.split(&:blank?).map(&:join).reject(&:blank?).map { |t| h(t).gsub(/\R/, '<br>') }.each do |t| %>
+          <li class='note_text'><%= raw(t)%></li>
         <% end %>
       </ul>
     <% end %>
   <% end %>
 </ul>
 
-<ul class='menu'>
-  <li><%= link_to('去年', notes_path(date: Date.new(@date.year - 1, 12, 31))) %></li>
-  <% @month_range.each do |m|%>
-    <li><%= link_to("#{m}月", notes_path(date: Date.new(@note.date.year, m, 1))) %></li>
+<ul class='month_menu'>
+  <li><%= link_to("#{@date.year - 1}年", notes_path(date: Date.new(@date.year - 1, 12, 31))) %></li>
+  <% (1..12).each do |m|%>
+    <li class="<%= m == @date.month ? 'current_month' : '' %>"><%= link_to("#{m == @date.month ? "#{@date.year}年" : '' }#{m}月", notes_path(date: Date.new(@date.year, m, 1))) %></li>
   <% end %>
-  <li><%= link_to('来年', notes_path(date: Date.new(@date.year + 1, 1, 1))) %></li>
+  <li><%= link_to("#{@date.year + 1}年", notes_path(date: Date.new(@date.year + 1, 1, 1))) %></li>
 </ul>
 
+<hr>
+
+<% if @current_user %>
+  <%= link_to('ログアウト', logout_path)%>
+<% else %>
+  <%= link_to('新規登録', new_user_path)%>
+  <%= link_to('ログイン', login_path)%>
+<% end %>
+
 <style>
-ul.menu > li {
+ul.month_menu li {
   padding: 5px;
   border:1px solid black;
   display: inline-block;
 }
+
+ul.month_menu li.current_month {
+  background: lightgray;
+}
+
+span#today a{
+  background-color: lightyellow;
+}
+
+li.note_text {
+  word-wrap: break-word;
+}
+
+input[type="submit"] {
+  height: 30px;
+  width: 30px;
+}
+
+body {
+  margin-right: 10%;
+  margin-left: 10%;
+}
 </style>
+
+<script>
+  setTimeout(() => {
+    document.querySelector('textarea#note_text').focus();
+  }, 100)
+</script>
