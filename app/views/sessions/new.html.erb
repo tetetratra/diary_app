@@ -1,0 +1,22 @@
+<h1>ログイン</h1>
+
+<% flash.each do |message_type, message| %>
+  <div class="alert alert-<%= message_type %>"><%= message %></div>
+<% end %>
+
+<%= form_for(:session, url: login_path) do |f| %>
+  <%= f.label :name %>
+  <%= f.text_field :name, value: @name %>
+
+  <%= f.label :password %>
+  <%= f.password_field :password %>
+
+  <%= f.label :remember_me, class: "checkbox inline" do %>
+    <%= f.check_box :remember_me, checked: 'checked' %>
+    <span>ログインを保持</span>
+  <% end %>
+
+  <%= f.submit "Log in" %>
+<% end %>
+
+<%= link_to '戻る', root_path %>
