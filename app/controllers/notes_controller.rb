@@ -4,20 +4,14 @@ class NotesController < ApplicationController
 
   def index
     @current_user = current_user
-    # 日付をパラメータで指定   => 指定日とその月を、編集状態で表示
-    # 日付をパラメータで未指定 => 今日と今月を、通常状態で表示
-    @date  = (params[:date].blank? || params[:date] == 'today') ? Date.today : Date.parse(params[:date])
-    @edit  = params[:edit]
-    @notes = @current_user.notes.where(date: @date.beginning_of_month..@date.end_of_month)
-    @note  = @current_user.notes.find_by(date: @date)
+    @date         = params[:date].blank? ? Date.today : Date.parse(params[:date])
+    @note         = @current_user.notes.find_by(date: @date)
   end
 
   def update
     note = current_user.notes.find(params[:id])
-    if note.update(note_params)
-      flash[:edit_success] = 'ok'
-    end
-    redirect_to notes_path(date: note.date, edit: true)
+    note.update(note_params)
+    # redirect_to notes_path(date: note.date)
   end
 
   private
@@ -29,7 +23,7 @@ class NotesController < ApplicationController
   end
 
   def note_params
-    params.require(:note).permit(:text, :date)
+    params.require(:note).permit(:text)
   end
 
   def create_empty_notes

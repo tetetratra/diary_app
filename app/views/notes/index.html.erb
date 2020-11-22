@@ -1,83 +1,98 @@
-<h1><%= link_to("#{@current_user.name}の日記", notes_path)%></h1>
-<% flash.reject { |k,v| k == 'edit_success' }.each do |message_type, message| %>
-  <p class="alert alert-<%= message_type %>"><%= message %></p>
-<% end %>
+<h1 class="title"><%= link_to("#{@current_user.name}の日記", notes_path)%></h1>
 
-<%= link_to('今日の日記へ', notes_path(date: 'today', edit: true, anchor: 'today')) %>
 
-<ul>
-  <% @notes.each do |note| %>
-    <% wd = %w[日 月 火 水 木 金 土][note.date.wday] %>
-    <li id="<%= note.date %>">
-      <span id="<%= note.date == Date.today ? 'today' : '' %>">
-        <%= link_to("#{note.date} (#{wd})", notes_path(date: note.date, edit: true, anchor: note.date.to_s))%>
-      </span>
-    </li>
-    <% if note.date == @date && @edit %>
-      <%= form_for(@note) do |f| %>
-        <%= f.text_area(:text, rows: "#{f.object.text.to_s.lines.size + 2}", cols: '100%') %>
-        <%= f.submit('✔︎') %>
-        <%= flash[:edit_success] %>
+<div class="note">
+  <% note = @note; date = @note.date %>
+  <% wd = %w[日 月 火 水 木 金 土][note.date.wday] %>
+  <% wd_class = %w[sun mon tue wed thu fri sat][date.wday] %>
+  <h2>
+    <%= "#{date.month}/#{date.day}" %>
+    <span class='<%= wd_class %>'>(<%= wd %>)</span>
+  </h2>
+  <textarea class="md-editor"></textarea>
+  <p class='last-modified'></p>
+</div>
+
+<div class='menu'>
+  <ul class='day_menu'>
+    <%
+      dates = case @date.beginning_of_month.wday
+              when 0 then [nil] * 6
+              else [nil] * (@date.beginning_of_month.wday - 1)
+              end
+      dates += [*@date.beginning_of_month..@date.end_of_month]
+      dates += [nil] * (7 - dates.size % 7)
+    %>
+    <% dates.each_with_index do |date, index| %>
+      <% if index % 7 == 0 %>
+        <br>
       <% end %>
-    <% else %>
-      <ul>
-        <% note.text.to_s.lines.split(&:blank?).map(&:join).reject(&:blank?).map { |t| h(t).gsub(/\R/, '<br>') }.each do |t| %>
-          <li class='note_text'><%= raw(t)%></li>
-        <% end %>
-      </ul>
+      <% if date %>
+        <% d = date.day %>
+        <% wd_class = %w[sun mon tue wed thu fri sat][date.wday] %>
+        <li class="<%= d == @date.day ? 'current_day' : '' %>">
+          <%= link_to("#{d}日", notes_path(date: Date.new(@date.year, @date.month, d)), { class: wd_class }) %>
+        </li>
+      <% else %>
+        <li>-</li>
+      <% end %>
     <% end %>
-  <% end %>
-</ul>
+  </ul>
 
-<ul class='month_menu'>
-  <li><%= link_to("#{@date.year - 1}年", notes_path(date: Date.new(@date.year - 1, 12, 31))) %></li>
-  <% (1..12).each do |m|%>
-    <li class="<%= m == @date.month ? 'current_month' : '' %>"><%= link_to("#{m == @date.month ? "#{@date.year}年" : '' }#{m}月", notes_path(date: Date.new(@date.year, m, 1))) %></li>
-  <% end %>
-  <li><%= link_to("#{@date.year + 1}年", notes_path(date: Date.new(@date.year + 1, 1, 1))) %></li>
-</ul>
+  <ul class='month_menu'>
+    <li><%= link_to("#{@date.year - 1}年", notes_path(date: Date.new(@date.year - 1, 12, 31))) %></li>
+    <% (1..12).each do |m|%>
+      <li class="<%= m == @date.month ? 'current_month' : '' %>"><%= link_to("#{m == @date.month ? "#{@date.year}年" : '' }#{m}月", notes_path(date: Date.new(@date.year, m, 1))) %></li>
+    <% end %>
+    <li><%= link_to("#{@date.year + 1}年", notes_path(date: Date.new(@date.year + 1, 1, 1))) %></li>
+  </ul>
+</div>
 
-<hr>
-
-<% if @current_user %>
+<div class="footer">
+  <hr>
   <%= link_to('ログアウト', logout_path)%>
-<% else %>
-  <%= link_to('新規登録', new_user_path)%>
-  <%= link_to('ログイン', login_path)%>
-<% end %>
-
-<style>
-ul.month_menu li {
-  padding: 5px;
-  border:1px solid black;
-  display: inline-block;
-}
-
-ul.month_menu li.current_month {
-  background: lightgray;
-}
-
-span#today a{
-  background-color: lightyellow;
-}
-
-li.note_text {
-  word-wrap: break-word;
-}
-
-input[type="submit"] {
-  height: 30px;
-  width: 30px;
-}
-
-body {
-  margin-right: 10%;
-  margin-left: 10%;
-}
-</style>
+</div>
 
 <script>
-  setTimeout(() => {
-    document.querySelector('textarea#note_text').focus();
-  }, 100)
+  window.addEventListener('load', e => {
+    const mdEditor = new SimpleMDE({
+      element: document.querySelector('textarea.md-editor'),
+      spellChecker: false,
+      status: []
+    })
+    mdEditor.value("<%= escape_javascript @note.text %>")
+
+    let noteTextPre = mdEditor.value()
+    let lastSavedAt_sec = (new Date).getTime() / 1000
+    const CsrfToken = document.querySelector("meta[name=csrf-token]").content
+    function save(){
+      const id = '<%= @note.id %>'
+      const noteText = mdEditor.value()
+      if(noteText === noteTextPre) { return }
+
+      fetch('/notes/' + id, {
+        method: 'PATCH',
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': CsrfToken
+        },
+        body: JSON.stringify({
+          note: { text: noteText }
+        })
+      })
+      let date = (new Date)
+      let doc = document.querySelector('p.last-modified')
+      doc.textContent = `saved ${("0" + date.getHours()).slice(-2)}:${("0" + date.getMinutes()).slice(-2)}:${("0" + date.getSeconds()).slice(-2)}`
+      noteTextPre = noteText
+    }
+    setInterval(() => {
+      const now_sec = (new Date).getTime() / 1000
+      if(now_sec - lastSavedAt_sec >= 5){
+        save()
+        lastSavedAt_sec = now_sec
+      }
+    }, 100)
+  })
 </script>
+
