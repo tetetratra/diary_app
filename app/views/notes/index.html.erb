@@ -40,11 +40,15 @@
   </ul>
 
   <ul class='month_menu'>
-    <li><%= link_to("#{@date.year - 1}年", notes_path(date: Date.new(@date.year - 1, 12, 31))) %></li>
+    <% if @date.year - 1 >= Date.today.year - 1 %>
+      <li><%= link_to("#{@date.year - 1}年", notes_path(date: Date.new(@date.year - 1, 12, 31))) %></li>
+    <% end %>
     <% (1..12).each do |m|%>
       <li class="<%= m == @date.month ? 'current_month' : '' %>"><%= link_to("#{m == @date.month ? "#{@date.year}年" : '' }#{m}月", notes_path(date: Date.new(@date.year, m, 1))) %></li>
     <% end %>
-    <li><%= link_to("#{@date.year + 1}年", notes_path(date: Date.new(@date.year + 1, 1, 1))) %></li>
+    <% if @date.year + 1 <= Date.today.year + 1 %>
+      <li><%= link_to("#{@date.year + 1}年", notes_path(date: Date.new(@date.year + 1, 1, 1))) %></li>
+    <% end %>
   </ul>
 </div>
 
