@@ -11,7 +11,7 @@
     <span class='<%= wd_class %>'>(<%= wd %>)</span>
   </h2>
   <textarea class="md-editor"></textarea>
-  <p class='last-modified'></p>
+  <p class='last-modified'>-</p>
 </div>
 
 <div class='menu'>
@@ -69,20 +69,25 @@
         codeSyntaxHighlighting: true
       }
     })
+    mdEditor.value((new DOMParser().parseFromString("<%= escape_javascript @note.text %>", 'text/html')).documentElement.textContent)
 
-    mdEditor.value(
-      (new DOMParser().parseFromString("<%= escape_javascript @note.text %>", 'text/html')).documentElement.textContent
-    )
-
-    let noteTextPre = mdEditor.value()
-    let lastSavedAt_sec = (new Date).getTime() / 1000
+    let noteTextPrev = mdEditor.value()
+    let noteTextLastSaved = mdEditor.value()
     const CsrfToken = document.querySelector("meta[name=csrf-token]").content
-    function save(){
-      const id = '<%= @note.id %>'
-      const noteText = mdEditor.value()
-      if(noteText === noteTextPre) { return }
+    const noteId = '<%= @note.id %>'
+    const saveNofity = document.querySelector('p.last-modified')
 
-      fetch('/notes/' + id, {
+    function save(){
+      const noteText = mdEditor.value()
+      if(noteText !== noteTextPrev) {  // 入力中だと思われるのでセーブはまだしない
+        noteTextPrev = noteText
+        return
+      }
+      if(noteText === noteTextLastSaved) { // 変化無しならセーブしない
+        return
+      }
+
+      fetch('/notes/' + noteId, {
         method: 'PATCH',
         credentials: 'same-origin',
         headers: {
@@ -92,19 +97,16 @@
         body: JSON.stringify({
           note: { text: noteText }
         })
+      }).then(res => {
+        saveNofity.textContent = 'saved'
+        setTimeout(() => saveNofity.textContent = '-', 1000)
+        noteTextLastSaved= noteText
+      }).catch(err => {
+        saveNofity.textContent = 'error!'
+        setTimeout(() => saveNofity.textContent = '-', 1000)
       })
-      let date = (new Date)
-      let doc = document.querySelector('p.last-modified')
-      doc.textContent = `saved ${("0" + date.getHours()).slice(-2)}:${("0" + date.getMinutes()).slice(-2)}:${("0" + date.getSeconds()).slice(-2)}`
-      noteTextPre = noteText
     }
-    setInterval(() => {
-      const now_sec = (new Date).getTime() / 1000
-      if(now_sec - lastSavedAt_sec >= 5){
-        save()
-        lastSavedAt_sec = now_sec
-      }
-    }, 100)
+    setInterval(() => save(), 2000)
   })
 </script>
 
