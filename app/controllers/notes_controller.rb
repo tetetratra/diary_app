@@ -11,7 +11,6 @@ class NotesController < ApplicationController
   def update
     note = current_user.notes.find(params[:id])
     note.update(note_params)
-    # redirect_to notes_path(date: note.date)
   end
 
   private
@@ -28,7 +27,7 @@ class NotesController < ApplicationController
 
   def create_empty_notes
     has_note_dates = current_user.notes.map(&:date)
-    target_dates   = (Date.today.beginning_of_year..Date.today.next_year.end_of_year).to_a
+    target_dates   = (Date.today.prev_year.beginning_of_year..Date.today.next_year.end_of_year).to_a
     empty_notes = (target_dates - has_note_dates).map { |target_date|
       {user_id: current_user.id, date: target_date}
     }
