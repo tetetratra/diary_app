@@ -33,3 +33,5 @@ module Diary
     config.generators.system_tests = nil
   end
 end
+
+require 'csv'

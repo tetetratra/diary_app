@@ -14,6 +14,22 @@ class NotesController < ApplicationController
     note.update(text: text)
   end
 
+  def csv_download
+    year = params[:year].to_i
+    date_range = Date.new(year, 1, 1)..Date.new(year, 12, 31)
+
+    bom = "\uFEFF"
+    csv_data = bom + CSV.generate(headers: %w[date text], write_headers: true, force_quotes: true) do |csv|
+      current_user.notes.where(date: date_range).each do |note|
+        csv << [
+          note.date,
+          note.text
+        ]
+      end
+    end
+    send_data csv_data, type: 'text/csv; charset=utf8', filename: "notes_#{year}.csv"
+  end
+
   private
 
   def check_login

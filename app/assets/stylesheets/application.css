@@ -13,3 +13,132 @@
  *= require_tree .
  *= require_self
  */
+
+h1.title {
+  margin-left: 3%;
+  margin-bottom: 3%;
+}
+
+div.note {
+  padding-left: 3em;
+  padding-right: 3em;
+}
+
+a {
+  text-decoration: none;
+}
+
+ul.month_menu {
+  padding-left: 20px;
+}
+
+ul.month_menu li {
+  padding: 5px;
+  border: 1px solid black;
+  margin-top: 5px;
+  display: inline-block;
+  background: #FFFEEF;
+}
+
+ul.month_menu li.current_month {
+  background: lightgray;
+}
+
+ul.day_menu {
+  clear: both;
+  margin-top: 5px;
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+ul.day_menu li {
+  padding: 5px;
+  border: 1px solid black;
+  margin-bottom: 5px;
+  width: 30px;
+  height: 20px;
+  display: inline-block;
+  text-align: center;
+  background: #FFFEEF;
+}
+
+ul.day_menu li.current_day {
+  background: lightgray;
+}
+
+a.mon, a.tue, a.wed, a.thu, a.fri {
+  color: #777;
+}
+
+a.sun {
+  color: #F99;
+}
+
+a.sat {
+  color: #77F;
+}
+
+span.mon, span.tue, span.wed, span.thu, span.fri {
+  color: #777;
+}
+
+span.sun {
+  color: #F99;
+}
+
+span.sat {
+  color: #77F;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  background: #FFFFFF;
+}
+
+div.footer {
+  background: #F5F5F5;
+  text-align: center;
+  height: 100px;
+}
+
+div.logout {
+  margin: 20px;
+}
+
+div.logout > a {
+  border: 1px solid gray;
+  border-radius: 8px;
+  padding: 5px;
+}
+
+div.csvdl {
+  margin: 20px;
+}
+
+div.csvdl > a {
+  border: 1px solid green;
+  border-radius: 8px;
+  padding: 5px;
+}
+
+p.last-modified {
+  font-size: 5px;
+}
+
+@media screen and (max-width: 42em) {
+  div.note {
+    padding-left: 1em;
+    padding-right: 1em;
+    width: 90%;
+    font-size: 1.2em;
+    line-height: 1.2;
+  }
+  ul.day_menu {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+
