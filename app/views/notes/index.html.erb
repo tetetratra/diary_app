@@ -11,8 +11,10 @@
     <span class='<%= wd_class %>'>(<%= wd %>)</span>
   </h2>
   <textarea class="md-editor"></textarea>
+  <button class='copy'>copy</button>
   <p class='last-modified'>-</p>
 </div>
+
 
 <div class='menu'>
   <ul class='day_menu'>
@@ -55,8 +57,8 @@
 
 <div class="footer">
   <hr>
+  <div class='csvdl'><%= link_to('CSVをダウンロード', csv_download_path(format: 'csv', year: @date.year)) %></div>
   <div class='logout'><%= link_to('ログアウト', logout_path)%></div>
-  <div class='csvdl'><%= link_to('CSVをDL', csv_download_path(format: 'csv', year: @date.year)) %></div>
 </div>
 
 <script>
@@ -107,6 +109,13 @@
       })
     }
     setInterval(() => save(), 2000)
+    const copyButton = document.querySelector('button.copy')
+    copyButton.addEventListener('click', e => {
+      navigator.clipboard.writeText(mdEditor.value())
+      copyButton.textContent = 'copied!'
+      setTimeout(() => {copyButton.textContent = 'copy' }, 800)
+    })
   })
+
 </script>
 

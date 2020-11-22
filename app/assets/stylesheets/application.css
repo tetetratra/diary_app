@@ -111,6 +111,7 @@ div.logout > a {
   border: 1px solid gray;
   border-radius: 8px;
   padding: 5px;
+  color: gray;
 }
 
 div.csvdl {
@@ -121,10 +122,16 @@ div.csvdl > a {
   border: 1px solid green;
   border-radius: 8px;
   padding: 5px;
+  color: gray;
 }
 
 p.last-modified {
   font-size: 5px;
+}
+
+button.copy {
+  width: 5em;
+  float: right;
 }
 
 @media screen and (max-width: 42em) {
