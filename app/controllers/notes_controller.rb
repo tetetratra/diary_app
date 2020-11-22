@@ -10,7 +10,8 @@ class NotesController < ApplicationController
 
   def update
     note = current_user.notes.find(params[:id])
-    note.update(note_params)
+    text = CGI.unescape_html(params[:note][:text])
+    note.update(text: text)
   end
 
   private
@@ -19,10 +20,6 @@ class NotesController < ApplicationController
     if current_user.nil?
       redirect_to root_path
     end
-  end
-
-  def note_params
-    params.require(:note).permit(:text)
   end
 
   def create_empty_notes

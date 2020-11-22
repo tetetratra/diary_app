@@ -1,5 +1,6 @@
-<h1 class="title"><%= link_to("#{@current_user.name}の日記", notes_path)%></h1>
-
+<div class="header">
+  <h1 class="title"><%= link_to("#{@current_user.name}の日記", notes_path)%></h1>
+</div>
 
 <div class="note">
   <% note = @note; date = @note.date %>
@@ -54,7 +55,7 @@
 
 <div class="footer">
   <hr>
-  <%= link_to('ログアウト', logout_path)%>
+  <div class='logout'><%= link_to('ログアウト', logout_path)%></div>
 </div>
 
 <script>
@@ -62,9 +63,15 @@
     const mdEditor = new SimpleMDE({
       element: document.querySelector('textarea.md-editor'),
       spellChecker: false,
-      status: []
+      status: [],
+      renderingConfig: {
+        codeSyntaxHighlighting: true
+      }
     })
-    mdEditor.value("<%= escape_javascript @note.text %>")
+
+    mdEditor.value(
+      (new DOMParser().parseFromString("<%= escape_javascript @note.text %>", 'text/html')).documentElement.textContent
+    )
 
     let noteTextPre = mdEditor.value()
     let lastSavedAt_sec = (new Date).getTime() / 1000

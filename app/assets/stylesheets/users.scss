@@ -80,6 +80,23 @@ body {
   margin: 0;
   padding: 0;
   font-size: 16px;
+  background: #FFFFF5;
+}
+
+div.footer {
+  background: #F5F5F5;
+  text-align: center;
+  height: 2em;
+}
+
+div.logout {
+  margin: 10px;
+}
+
+div.logout > a {
+  border: 1px solid gray;
+  border-radius: 8px;
+  padding: 5px;
 }
 
 p.last-modified {
