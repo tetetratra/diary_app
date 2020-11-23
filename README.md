@@ -1,3 +1,3 @@
 シンプル日記
 
-https://tetetratra-diary.herokuapp.com/
+https://md-iary.herokuapp.com
