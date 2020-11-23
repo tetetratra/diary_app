@@ -55,7 +55,7 @@ function save(noteId, noteText, saveNofity){
 window.addEventListener('load', e => {
   document.querySelectorAll('div.note').forEach(note => {
     const noteId = note.getAttribute('noteid')
-    const initValue = (new DOMParser().parseFromString( note.querySelector('div.init-value').textContent, 'text/html' )).documentElement.textContent
+    const initValue = (new DOMParser().parseFromString( note.querySelector('div.init-value').innerHTML, 'text/html' )).documentElement.textContent
     createMdEditor(noteId, initValue)
   })
 })
