@@ -2,10 +2,23 @@ class NotesController < ApplicationController
   before_action :check_login
   before_action :create_empty_notes
 
+  def show
+    @current_user = current_user
+    @date         = Date.parse(params[:id])
+    @note         = @current_user.notes.find_by(date: @date)
+  end
+
   def index
     @current_user = current_user
-    @date         = params[:date].blank? ? Date.today : Date.parse(params[:date])
-    @note         = @current_user.notes.find_by(date: @date)
+    if params[:dates_from].blank? || params[:dates_to].blank?
+      @date = Date.today
+      @note = @current_user.notes.find_by(date: @date)
+      render :show
+    else
+      @dates_from = Date.parse(params[:dates_from])
+      @dates_to   = Date.parse(params[:dates_to])
+      @notes      = @current_user.notes.where(date: @dates_from..@dates_to).order(:date)
+    end
   end
 
   def update
@@ -17,7 +30,6 @@ class NotesController < ApplicationController
   def csv_download
     year = params[:year].to_i
     date_range = Date.new(year, 1, 1)..Date.new(year, 12, 31)
-
     bom = "\uFEFF"
     csv_data = bom + CSV.generate(headers: %w[date text], write_headers: true, force_quotes: true) do |csv|
       current_user.notes.where(date: date_range).where('text IS NOT NULL').order(:date).each do |note|

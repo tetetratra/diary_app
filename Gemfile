@@ -46,6 +46,7 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'ridgepole'
 gem 'bcrypt'
 gem 'activerecord-import'
+gem 'friendly_id'
 
 group :production do
   gem 'pg'

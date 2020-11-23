@@ -1,0 +1,27 @@
+<ul class='day_menu'>
+  <%
+    target_dates = Array(target_dates)
+    dates = case target_dates.first.beginning_of_month.wday
+            when 0 then [nil] * 6
+            else [nil] * (target_dates.first.beginning_of_month.wday - 1)
+            end
+    dates += [*target_dates.first.beginning_of_month..target_dates.first.end_of_month]
+    dates += [nil] * (7 - dates.size % 7)
+  %>
+  <% dates.each_slice(7).each do |week_dates| %>
+    <br>
+    <li class='weeks-link'>
+      <%= link_to((week_dates.compact.first.strftime('%W').to_i + 1).to_s + '週', notes_path(dates_from: week_dates.compact.first, dates_to: week_dates.compact.last)) %>
+    </li>
+    <% week_dates.each do |date| %>
+      <% if date %>
+        <% wd_class = %w[sun mon tue wed thu fri sat][date.wday] %>
+        <li class="<%= date.in?(target_dates) ? 'current_day' : '' %>">
+          <%= link_to("#{date.day}日", note_path(Date.new(date.year, date.month, date.day)), { class: wd_class }) %>
+        </li>
+      <% else %>
+        <li>-</li>
+      <% end %>
+    <% end %>
+  <% end %>
+</ul>

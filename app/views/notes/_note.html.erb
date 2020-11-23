@@ -1,0 +1,13 @@
+<div class="note" noteid="<%= note.id %>">
+  <div hidden class='init-value'><%= note.text %></div>
+  <% wd = %w[日 月 火 水 木 金 土][note.date.wday] %>
+  <% wd_class = %w[sun mon tue wed thu fri sat][note.date.wday] %>
+  <h2>
+    <%= "#{note.date.month}/#{note.date.day}" %>
+    <span class='<%= wd_class %>'>(<%= wd %>)</span>
+  </h2>
+  <textarea class="md-editor note-id-<%= note.id %>"></textarea>
+  <button class='copy note-id-<%= note.id %>'>copy</button>
+  <p class='last-modified note-id-<%= note.id %>'>-</p>
+</div>
+

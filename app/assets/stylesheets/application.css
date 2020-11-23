@@ -37,7 +37,8 @@ ul.month_menu li {
   border: 1px solid black;
   margin-top: 5px;
   display: inline-block;
-  background: #FFFEEF;
+  background: #EEFFEF;
+  border-radius: 3px;
 }
 
 ul.month_menu li.current_month {
@@ -60,10 +61,16 @@ ul.day_menu li {
   display: inline-block;
   text-align: center;
   background: #FFFEEF;
+  border-radius: 3px;
 }
 
 ul.day_menu li.current_day {
   background: lightgray;
+}
+
+ul.day_menu li.weeks-link {
+  background: #FFEEEE;
+  border-radius: 5px;
 }
 
 a.mon, a.tue, a.wed, a.thu, a.fri {
