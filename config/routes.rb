@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
-  resources :notes, only: [:show, :index, :update]
+  resources :notes, only: [:show, :index]
+  patch '/notes', to: 'notes#update'
   resources :users, only: [:new, :create]
   get '/login', to: 'sessions#new'
   post '/login', to: 'sessions#create'

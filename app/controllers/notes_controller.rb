@@ -1,30 +1,36 @@
 class NotesController < ApplicationController
   before_action :check_login
-  before_action :create_empty_notes
 
   def show
     @current_user = current_user
     @date         = Date.parse(params[:id])
-    @note         = @current_user.notes.find_by(date: @date)
+    @note         = @current_user.notes.find_or_initialize_by(date: @date)
   end
 
   def index
     @current_user = current_user
     if params[:dates_from].blank? || params[:dates_to].blank?
       @date = Date.today
-      @note = @current_user.notes.find_by(date: @date)
+      @note = @current_user.notes.find_or_initialize_by(date: @date)
       render :show
     else
       @dates_from = Date.parse(params[:dates_from])
       @dates_to   = Date.parse(params[:dates_to])
-      @notes      = @current_user.notes.where(date: @dates_from..@dates_to).order(:date)
+      @notes = (@dates_from..@dates_to).map do |date|
+        @current_user.notes.find_or_initialize_by(date: date)
+      end
     end
   end
 
   def update
-    note = current_user.notes.find(params[:id])
+    date = params[:note][:date]
     text = CGI.unescape_html(params[:note][:text])
-    note.update(text: text)
+    note = current_user.notes.find_or_initialize_by(date: date)
+    if text.blank?
+      note.delete
+    else
+      note.update(text: text, date: date)
+    end
   end
 
   def csv_download
@@ -48,14 +54,5 @@ class NotesController < ApplicationController
     if current_user.nil?
       redirect_to root_path
     end
-  end
-
-  def create_empty_notes
-    has_note_dates = current_user.notes.map(&:date)
-    target_dates   = (Date.today.prev_year.beginning_of_year..Date.today.next_year.end_of_year).to_a
-    empty_notes = (target_dates - has_note_dates).map { |target_date|
-      {user_id: current_user.id, date: target_date}
-    }
-    Note.import empty_notes
   end
 end
