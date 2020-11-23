@@ -6,7 +6,9 @@
             else [nil] * (target_dates.first.beginning_of_month.wday - 1)
             end
     dates += [*target_dates.first.beginning_of_month..target_dates.first.end_of_month]
-    dates += [nil] * (7 - dates.size % 7)
+    unless (dates.size % 7).zero?
+      dates += [nil] * (7 - dates.size % 7)
+    end
   %>
   <% dates.each_slice(7).each do |week_dates| %>
     <br>
