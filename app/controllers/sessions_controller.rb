@@ -2,6 +2,12 @@ class SessionsController < ApplicationController
   def new
   end
 
+  def sample_new
+    user = User.find_by(name: 'sample_user') || User.create(name: 'sample_user', password: '0000')
+    session[:user_id] = user.id
+    redirect_to notes_path
+  end
+
   def create # ログイン
     @name = params[:session][:name]
     user = User.find_by(name: @name)

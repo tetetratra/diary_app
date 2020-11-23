@@ -1,16 +1,83 @@
 <!DOCTYPE>
 <html>
   <head>
-    <title>Diary</title>
+    <title>MDiary</title>
     <meta charset="utf-8">
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background: #FFFEF2;
+      }
+      h1.title {
+        display: inline-block;
+        margin-top: 2%;
+        margin-left: 3%;
+        font-size: 2em;
+      }
+      span.m {
+        color: #997777;
+      }
+      span.d {
+        color: #888888;
+      }
+      span.iary {
+        color: #7777CC;
+      }
+      a[href='/login'] {
+        display: inline-block;
+        margin: 3px;
+        margin-left: 3%;
+        padding: 7px;
+        border: solid 1px black;
+        text-decoration: none;
+        border-radius: 5px;
+        background: #AAFFAA;
+        color: white;
+        font-weight: bold;
+      }
+      a[href='/users/new'] {
+        display: inline-block;
+        margin: 3px;
+        padding: 7px;
+        border: solid 1px black;
+        text-decoration: none;
+        border-radius: 5px;
+        background: #AAAAFF;
+        color: white;
+        font-weight: bold;
+      }
+      a[href='/sample_login'] {
+        display: inline-block;
+        margin: 3px;
+        padding: 7px;
+        border: solid 1px black;
+        text-decoration: none;
+        border-radius: 5px;
+        background: #FFAAAA;
+        color: white;
+        font-weight: bold;
+      }
+      div.description {
+        margin-left: 5%;
+      }
+    </style>
   </head>
   <body>
-    <h3>シンプルダイアリー</h3>
-    <ul>
-      <li><a href='/login'>ログイン</a></li>
-      <li><a href='/users/new'>新規登録</a></li>
-    </ul>
-    <br>
-    <p>作: <a href='https://tetetratra.net'>tetetratra.net</a></p>
+    <h1 class="title"><span class='m'>M</span><span class='d'>D</span><span class='iary'>iary</span></h1>
+    <a href='/login'>ログイン</a>
+    <a href='/users/new'>新規登録</a>
+    <a href='/sample_login'>お試し</a>
+
+    <div class="description">
+      <p>日付ごとに分かれている日記サービスです</p>
+      <ul>
+        <li>1日ごと</li>
+        <li>シンプル</li>
+        <li>マークダウン</li>
+        <li>自動保存</li>
+      </ul>
+      <p class="author">作: <a href='https://tetetratra.net'>tetetratra.net</a></p>
+    </div>
   </body>
 </html>

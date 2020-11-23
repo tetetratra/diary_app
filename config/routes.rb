@@ -6,4 +6,5 @@ Rails.application.routes.draw do
   get '/logout', to: 'sessions#destroy'
   get '/csv_download', to: 'notes#csv_download', as: 'csv_download'
   root to: redirect('/index.html')
+  get '/sample_login', to: 'sessions#sample_new'
 end
