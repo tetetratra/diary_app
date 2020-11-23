@@ -1,7 +1,7 @@
-function createMdEditor(noteId, initValue){
-  const textArea   = document.querySelector(`textarea.md-editor.note-id-${noteId}`)
-  const saveNofity = document.querySelector(`p.last-modified.note-id-${noteId}`)
-  const copyButton = document.querySelector(`button.copy.note-id-${noteId}`)
+function createMdEditor(date, initValue){
+  const textArea   = document.querySelector(`div[note-date='${date}'] textarea.md-editor`)
+  const saveNofity = document.querySelector(`div[note-date='${date}'] p.last-modified`)
+  const copyButton = document.querySelector(`div[note-date='${date}'] button.copy`)
 
   const mdEditor = new SimpleMDE({
     element: textArea,
@@ -20,7 +20,7 @@ function createMdEditor(noteId, initValue){
       noteTextPrev = noteText
     } else if(noteText === noteTextLastSaved){ // 変化無しならセーブしない
     } else { // 入力終了 & 変化ありならセーブする
-      save(noteId, noteText, saveNofity)
+      save(date, noteText, saveNofity)
       noteTextLastSaved = noteText
     }
   }, 1000)
@@ -34,9 +34,9 @@ function createMdEditor(noteId, initValue){
   })
 }
 
-function save(noteId, noteText, saveNofity){
+function save(date, noteText, saveNofity){
   const csrfToken  = document.querySelector('meta[name=csrf-token]').content
-  fetch('/notes/' + noteId, {
+  fetch('/notes/', {
     method: 'PATCH',
     credentials: 'same-origin',
     headers: {
@@ -44,7 +44,7 @@ function save(noteId, noteText, saveNofity){
       'X-CSRF-Token': csrfToken
     },
     body: JSON.stringify({
-      note: { text: noteText }
+      note: { text: noteText, date: date }
     })
   }).then(res => {
     saveNofity.textContent = 'saved'
@@ -54,9 +54,9 @@ function save(noteId, noteText, saveNofity){
 
 window.addEventListener('load', e => {
   document.querySelectorAll('div.note').forEach(note => {
-    const noteId = note.getAttribute('noteid')
     const initValue = (new DOMParser().parseFromString( note.querySelector('div.init-value').innerHTML, 'text/html' )).documentElement.textContent
-    createMdEditor(noteId, initValue)
+    const date = note.getAttribute('note-date')
+    createMdEditor(date, initValue)
   })
 })
 
