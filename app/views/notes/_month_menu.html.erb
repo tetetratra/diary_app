@@ -1,0 +1,15 @@
+<ul class='month_menu'>
+  <% if date.year - 1 >= Date.today.year - 1 %>
+    <li><%= link_to("#{date.year - 1}年", note_path(Date.new(date.year - 1, 12, 31))) %></li>
+  <% end %>
+  <% (1..12).each do |m|%>
+    <li class="<%= m == date.month ? 'current_month' : '' %>">
+      <%= link_to("#{m == date.month ? "#{date.year}年" : '' }#{m}月", notes_path(dates_from: Date.new(date.year, m, 1), dates_to: Date.new(date.year, m, 1).end_of_month)) %>
+    </li>
+  <% end %>
+  <% if date.year + 1 <= Date.today.year + 1 %>
+    <li>
+      <%= link_to("#{date.year + 1}年", note_path(Date.new(date.year + 1, 1, 1))) %>
+    </li>
+  <% end %>
+</ul>

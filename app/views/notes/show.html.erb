@@ -1,0 +1,11 @@
+<%= render('header') %>
+
+<%= render('note', {note: @note}) %>
+
+<div class='menu'>
+  <%= render('day_menu', {target_dates: @date}) %>
+  <%= render('month_menu', {date: @date}) %>
+</div>
+
+<%= render('footer', {date: @date}) %>
+
