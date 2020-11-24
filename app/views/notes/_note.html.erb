@@ -3,8 +3,9 @@
   <% wd = %w[日 月 火 水 木 金 土][note.date.wday] %>
   <% wd_class = %w[sun mon tue wed thu fri sat][note.date.wday] %>
   <h2>
-    <%= "#{note.date.month}/#{note.date.day}" %>
-    <span class='<%= wd_class %>'>(<%= wd %>)</span>
+    <%= link_to(note_path(note)) do %>
+      <%= "#{note.date.month}/#{note.date.day}" %><span class='<%= wd_class %>'>(<%= wd %>)</span>
+    <% end %>
   </h2>
   <textarea class="md-editor"></textarea>
   <button class='copy'>copy</button>

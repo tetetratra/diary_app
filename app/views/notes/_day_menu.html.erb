@@ -2,12 +2,14 @@
   <%
     target_dates = Array(target_dates)
     dates = case target_dates.first.beginning_of_month.wday
-            when 0 then [nil] * 6
-            else [nil] * (target_dates.first.beginning_of_month.wday - 1)
+            when 0
+              [*1..6].reverse.map { |i| target_dates.first.beginning_of_month - i }
+            else
+              [*1..(target_dates.first.beginning_of_month.wday - 1)].reverse.map { |i| target_dates.first.beginning_of_month - i }
             end
     dates += [*target_dates.first.beginning_of_month..target_dates.first.end_of_month]
     unless (dates.size % 7).zero?
-      dates += [nil] * (7 - dates.size % 7)
+      dates += [*1..(7 - dates.size % 7)].map { |i| target_dates.first.end_of_month + i }
     end
   %>
   <% dates.each_slice(7).each do |week_dates| %>
@@ -18,7 +20,7 @@
     <% week_dates.each do |date| %>
       <% if date %>
         <% wd_class = %w[sun mon tue wed thu fri sat][date.wday] %>
-        <li class="<%= date.in?(target_dates) ? 'current_day' : '' %>">
+        <li class="<%= date.in?(target_dates) ? 'current_day' : '' %> <%= date.month == target_dates.first.month ? 'current_month' : ''%>">
           <%= link_to("#{date.day}日", note_path(Date.new(date.year, date.month, date.day)), { class: wd_class }) %>
         </li>
       <% else %>
