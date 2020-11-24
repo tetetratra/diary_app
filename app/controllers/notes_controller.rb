@@ -38,7 +38,7 @@ class NotesController < ApplicationController
     date_range = Date.new(year, 1, 1)..Date.new(year, 12, 31)
     bom = "\uFEFF"
     csv_data = bom + CSV.generate(headers: %w[date text], write_headers: true, force_quotes: true) do |csv|
-      current_user.notes.where(date: date_range).where('text IS NOT NULL').order(:date).each do |note|
+      current_user.notes.where(date: date_range).order(:date).each do |note|
         csv << [
           note.date,
           note.text

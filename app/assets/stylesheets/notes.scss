@@ -37,7 +37,7 @@ ul.day_menu {
   clear: both;
   margin-top: 5px;
   margin-right: 5px;
-  margin-left: 5px;
+  margin-left: -1.5%;
 }
 
 ul.day_menu li {
@@ -48,13 +48,17 @@ ul.day_menu li {
   height: 20px;
   display: inline-block;
   text-align: center;
-  background: #FFFEEF;
   border-radius: 3px;
+}
+
+ul.day_menu li.current_month {
+  background: #FFFEEF;
 }
 
 ul.day_menu li.current_day {
   background: lightgray;
 }
+
 
 ul.day_menu li.weeks-link {
   background: #FFEEEE;
