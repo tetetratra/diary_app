@@ -1,3 +1,4 @@
-シンプル日記
+# md-iary
 
 https://md-iary.herokuapp.com
+
