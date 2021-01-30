@@ -1,20 +1,17 @@
-import React, { Component, useState, useContext, createContext, useRef, createRef} from 'react';
-import SortableTree, { addNodeUnderParent, removeNode } from 'react-sortable-tree';
+import React, { useState, useContext, createContext, createRef} from 'react';
+import SortableTree, { addNodeUnderParent, removeNode, walk } from 'react-sortable-tree';
 import 'react-sortable-tree/style.css';
 import FileExplorerTheme from 'react-sortable-tree-theme-minimal';
-import useStateWithCallback from 'use-state-with-callback';
+// import useStateWithCallback from 'use-state-with-callback';
 import { TextField, Checkbox } from '@material-ui/core';
 import './Diary.css';
 
-const MyContext = createContext(() => {})
+const EditContext = createContext(() => {})
 
 const Diary = props => {
   const today = new Date()
-  const [edit, setEdit] = useStateWithCallback(false, () => {
-    console.log(nodes.map((n, i) => [n.ref.current, n.parentKey, i]))
-  })
+  const [edit, setEdit] = useState(false)
   const [treeData, setTreeData] = useState([])
-  const [nodes, setNodes] = useState([])
   const addChild = rowInfo => {
     const parentKey = rowInfo ? rowInfo.treeIndex : undefined
     const ref = createRef(null)
@@ -29,24 +26,40 @@ const Diary = props => {
       getNodeKey: ({ treeIndex }) => treeIndex
     })
     setTreeData(newTree.treeData)
-    const node = { ref: ref, parentKey: parentKey, treeIndex: newTree.treeIndex }
-    setNodes(prevNodes => [...prevNodes, node])
   }
   const deleteSelf = rowInfo => {
-    setNodes(prevNodes => prevNodes.filter(n => n.treeIndex === rowInfo.treeIndex))
     setTreeData(removeNode({
       treeData: treeData,
       path: rowInfo.path,
       getNodeKey: ({ treeIndex }) => treeIndex
     }).treeData)
   }
+  const toggleEdit = () => {
+    if (edit){
+      walk({
+        treeData: treeData,
+        getNodeKey: ({ treeIndex }) => treeIndex,
+        callback: n => {console.log(n)}
+      })
+    }
+    setEdit(e => !e)
+  }
+  const treeSize = () => {
+    let count = 0
+    walk({
+      treeData: treeData,
+      getNodeKey: ({ treeIndex }) => treeIndex,
+      callback: n => {count += 1}
+    })
+    return count
+  }
   return (
     <div>
       <h2>{today.getDate()}日</h2>
-      <button onClick={e => setEdit(e => !e)}>{edit ? 'save' : 'edit'}</button>
+      <button onClick={toggleEdit}>{edit ? 'save' : 'edit'}</button>
       {edit && <button onClick={addChild}>+</button>}
-      <div className={'task-tree'} style={{ height: (nodes.length === 0 ? 62 : nodes.length * 62) + 50 }}>
-        <MyContext.Provider value={edit}
+      <div className={'task-tree'} style={{ height: (treeSize() === 0 ? 62 : treeSize() * 62) + 60 }}>
+        <EditContext.Provider value={edit}
           children={<SortableTree
             treeData={treeData}
             onChange={treeData => setTreeData(treeData)}
@@ -77,7 +90,7 @@ const statusToCheckBox = status => (
 const TaskInput = React.forwardRef((props, ref) => {
   const [name, setName] = useState('new')
   const [status, setStatus] = useState(0)
-  const edit = useContext(MyContext)
+  const edit = useContext(EditContext)
   return (
     <span ref={ref}>
       <span onClick={() => setStatus(s => (s + 1) % 3)}>{statusToCheckBox(status)}</span>
