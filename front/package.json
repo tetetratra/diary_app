@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^4.11.3",
     "react": "^16.3.0",
     "react-dnd": "^7.3.0",
     "react-dom": "^16.14.0",
