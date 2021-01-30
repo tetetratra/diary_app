@@ -2,8 +2,7 @@ import React, { useState, useContext, createContext, createRef} from 'react';
 import SortableTree, { addNodeUnderParent, removeNode, walk } from 'react-sortable-tree';
 import 'react-sortable-tree/style.css';
 import FileExplorerTheme from 'react-sortable-tree-theme-minimal';
-// import useStateWithCallback from 'use-state-with-callback';
-import { TextField, Checkbox } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 import './Diary.css';
 
 const EditContext = createContext(() => {})
@@ -58,7 +57,11 @@ const Diary = props => {
       <h2>{today.getDate()}日</h2>
       <button onClick={toggleEdit}>{edit ? 'save' : 'edit'}</button>
       {edit && <button onClick={addChild}>+</button>}
-      <div className={'task-tree'} style={{ height: (treeSize() === 0 ? 62 : treeSize() * 62) + 60 }}>
+      <div
+        className={'task-tree'}
+        style={{ height: (treeSize() === 0 ? 62 : treeSize() * 62) + 60 }}
+        onClick={!edit && setEdit}
+      >
         <EditContext.Provider value={edit}
           children={<SortableTree
             treeData={treeData}
@@ -74,14 +77,16 @@ const Diary = props => {
           />}
         />
       </div>
-      <Note/>
+      <div onClick={!edit && setEdit}>
+        <Note edit={edit}/>
+      </div>
     </div>
   )
 }
 
-const statusToCheckBox = status => (
+const statusToCheckBox = (status, edit) => (
   {
-    0: <span>・</span>,
+    0: <span>{edit ? '・' : ''}</span>,
     1: <input type='checkbox'></input>,
     2: <input type='checkbox' checked></input>
   }[status]
@@ -93,22 +98,28 @@ const TaskInput = React.forwardRef((props, ref) => {
   const edit = useContext(EditContext)
   return (
     <span ref={ref}>
-      <span onClick={() => setStatus(s => (s + 1) % 3)}>{statusToCheckBox(status)}</span>
+      <span onClick={() => edit && setStatus(s => (s + 1) % 3)}>{statusToCheckBox(status, edit)}</span>
       {edit ? <input type="text" value={name} onChange={e => setName(e.target.value)}></input> : name}
     </span>
   )
 })
 
-const Note = props => {
+const Note = ({edit}) => {
+  const [value, setValue] = React.useState('new');
+  const handleChange = e => {
+    setValue(e.target.value)
+  }
   return (
-    <TextField
+    edit ? <TextField
       id="outlined-multiline-static"
-      label="Multiline"
       multiline
       rows={6}
-      defaultValue="Default Value"
+      value={value}
       variant="outlined"
-    />
+      onChange={handleChange}
+    /> : (
+      value.split("\n\n").map(str => <p dangerouslySetInnerHTML={{__html: str.replace("\n", '<br />')}}></p>)
+    )
   )
 }
 
