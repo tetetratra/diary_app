@@ -7,7 +7,8 @@ import './Diary.css';
 
 const EditContext = createContext(() => {})
 
-const Diary = ({date = new Date()}) => {
+const Diary = props => {
+  const date = props.date
   const [edit, setEdit] = useState(false)
   const [treeData, setTreeData] = useState([])
   const addChild = rowInfo => {
@@ -53,7 +54,7 @@ const Diary = ({date = new Date()}) => {
   }
   return (
     <div>
-      <h2>{date.getDate()}日</h2>
+      <h2>{date.month() + 1}月{date.date()}日</h2>
       <button onClick={toggleEdit}>{edit ? 'save' : 'edit'}</button>
       {edit && <button onClick={addChild}>+</button>}
       <div
