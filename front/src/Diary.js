@@ -7,8 +7,7 @@ import './Diary.css';
 
 const EditContext = createContext(() => {})
 
-const Diary = props => {
-  const today = new Date()
+const Diary = ({date = new Date()}) => {
   const [edit, setEdit] = useState(false)
   const [treeData, setTreeData] = useState([])
   const addChild = rowInfo => {
@@ -54,7 +53,7 @@ const Diary = props => {
   }
   return (
     <div>
-      <h2>{today.getDate()}日</h2>
+      <h2>{date.getDate()}日</h2>
       <button onClick={toggleEdit}>{edit ? 'save' : 'edit'}</button>
       {edit && <button onClick={addChild}>+</button>}
       <div
@@ -77,7 +76,7 @@ const Diary = props => {
           />}
         />
       </div>
-      <div onClick={!edit && setEdit}>
+      <div className={'note'} onClick={!edit && setEdit}>
         <Note edit={edit}/>
       </div>
     </div>
@@ -113,7 +112,7 @@ const Note = ({edit}) => {
     edit ? <TextField
       id="outlined-multiline-static"
       multiline
-      rows={6}
+      rows={value.split("\n").length + 1}
       value={value}
       variant="outlined"
       onChange={handleChange}

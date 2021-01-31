@@ -1,3 +1,13 @@
 div.task-tree button[type="button"] {
   visibility: hidden;
 }
+
+div.note {
+  margin: 20px;
+}
+
+div.note > p {
+  min-height: 50px;
+  padding-left: 20px;
+  border-left: 1px solid lightgray;
+}
