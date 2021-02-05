@@ -4,6 +4,7 @@ div.task-tree button[type="button"] {
 
 div.note {
   margin: 20px;
+  margin-bottom: 4rem;
 }
 
 div.note > p {

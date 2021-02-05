@@ -11,9 +11,11 @@ const Note = ({edit, setEdit, value, setValue}) => {
         id="outlined-multiline-static"
         multiline
         rows={value.split("\n").length + 1}
+        cols={100}
         value={value}
         variant="outlined"
         onChange={handleChange}
+        inputProps={{style: {width: "40rem"} }}
       /> : (
         value.split("\n\n").map(str => <p dangerouslySetInnerHTML={{__html: str.replace("\n", '<br />')}}></p>)
       )

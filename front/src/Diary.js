@@ -22,11 +22,24 @@ const Diary = ({date, initialTreeData, initialValue}) => {
     setEdit(e => !e)
   }
   return (
-    <div>
-      <h2>{date.month() + 1}月{date.date()}日</h2>
-      <button onClick={toggleEdit}>{edit ? 'save' : 'edit'}</button>
-      <Tree date={date} treeData={treeData} setTreeData={setTreeData} edit={edit} setEdit={setEdit} key={date}/>
-      <Note edit={edit} setEdit={setEdit} value={value} setValue={setValue} key={date}/>
+    <div className={"container"}>
+      <div className={"row"}>
+        <div className={"col-lg-8 col-md-10 mx-auto"}>
+          <div className={"post-preview"}>
+            <h2 className={"post-title"}>
+              {date.month() + 1}月{date.date()}日&nbsp;
+              {edit ? (
+                <i onClick={toggleEdit} className={"far fa-save"}></i>
+              ) : (
+                <i onClick={toggleEdit} className={"fas fa-edit"}></i>
+              )}
+            </h2>
+          </div>
+          <Tree date={date} treeData={treeData} setTreeData={setTreeData} edit={edit} setEdit={setEdit} />
+          <Note edit={edit} setEdit={setEdit} value={value} setValue={setValue} />
+          <hr />
+        </div>
+      </div>
     </div>
   )
 }

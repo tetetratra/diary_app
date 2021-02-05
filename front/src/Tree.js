@@ -32,13 +32,18 @@ const Tree = ({date, treeData, setTreeData, edit, setEdit}) => {
     })
     setTreeData(newTree.treeData)
   }
+  const statusToIcomClass = ({
+    0: 'fas fa-xs fa-circle',
+    1: 'far fa-square',
+    2: 'far fa-check-square'
+  })
   return (
     <div
       className={'task-tree'}
-      style={{ height: (treeSize() === 0 ? 62 : treeSize() * 62) + 60 }}
+      style={{ height: (treeSize() === 0 ? 62 : treeSize() * 62) + 40 }}
       onClick={!edit && setEdit}
     >
-      {edit && <button onClick={() => addChild(undefined)}>+</button>}
+      {edit && <i onClick={() => addChild(undefined)} className={'fas fa-plus'} />}
       <SortableTree
         key={date}
         treeData={treeData}
@@ -47,23 +52,24 @@ const Tree = ({date, treeData, setTreeData, edit, setEdit}) => {
         onChange={treeData => setTreeData(treeData)}
         generateNodeProps={({ node, path, treeIndex }) => ({
           buttons: [
-            (edit && <button onClick={() => addChild(treeIndex)}>+</button>),
-            (edit && <button onClick={() => deleteSelf(path)}>-</button>)
+            (edit && <i onClick={() => addChild(treeIndex)} className={'fas fa-plus'}>&nbsp;</i>),
+            (edit && <i onClick={() => deleteSelf(path)} className={'fas fa-minus'}>&nbsp;</i>),
           ],
           title: (
             edit ? <>
-              <button onClick={ () =>
-                setTreeData(treeDataOld => (
-                  changeNodeAtPath({
-                    treeData: treeDataOld,
-                    path,
-                    getNodeKey,
-                    newNode: { ...node, status: (node.status + 1) % 3 }
-                  })
-                ))
-              }>
-                {node.status}
-              </button>
+              <i
+                className={statusToIcomClass[node.status]}
+                onClick={ () =>
+                  setTreeData(treeDataOld => (
+                    changeNodeAtPath({
+                      treeData: treeDataOld,
+                      path,
+                      getNodeKey,
+                      newNode: { ...node, status: (node.status + 1) % 3 }
+                    })
+                  ))
+                }
+              >&nbsp;&nbsp;</i>
               <input
                 value={node.name}
                 onChange={event => {
@@ -79,7 +85,7 @@ const Tree = ({date, treeData, setTreeData, edit, setEdit}) => {
                 }}
               />
             </> : (
-              <p>[{node.status}] {node.name}</p>
+              <p>{node.status !== 0 && <i className={statusToIcomClass[node.status]} />}&nbsp;&nbsp;{node.name}</p>
             )
           )
         })}

@@ -7,6 +7,9 @@ import logo from './logo.svg';
 import Diary from './Diary.js';
 import Calendar from './Calendar.js';
 
+import Footer from './Footer.js';
+
+
 const moment = extendMoment(Moment);
 
 const Home = ({history}) => {
@@ -18,21 +21,23 @@ const Home = ({history}) => {
   useEffect(() => {
     console.log(query)
     alert('fetch!')
+    // asyncでアロー関数して、awaitでfetchすればよさそう
+    // APIキー, begin, end をもらって、
+    // datesの配列を受け取って, initialTreeData, initialValue に配分すればよさそう
     setDiaries(Array.from(dateRange).map(date =>
       <Diary
         date={date}
-        key={date}
         initialTreeData={ [{name: 'fetched task name', status: 0, expanded: true}] }
         initialValue={"fetched note value"}
       />
     ))
   }, [Array.from(query.values()).join("-")])
   return (
-    <div>
-      <h1>md-iary</h1>
-      <Calendar history={history} />
+    <>
+      <Calendar history={history} dateFrom={dateFrom} dateTo={dateTo} />
       {Diaries}
-    </div>
+      <Footer />
+    </>
   )
 }
 
