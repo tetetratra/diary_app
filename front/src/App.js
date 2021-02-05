@@ -1,12 +1,12 @@
-import logo from './logo.svg';
-import Diary from './Diary.js';
-import Calendar from './Calendar.js';
 import { BrowserRouter as Router, Route, useLocation } from "react-router-dom"
 import Moment from 'moment';
 import { extendMoment } from 'moment-range';
 
-const moment = extendMoment(Moment);
+import logo from './logo.svg';
+import Diary from './Diary.js';
+import Calendar from './Calendar.js';
 
+const moment = extendMoment(Moment);
 
 const Home = props => {
   const query = new URLSearchParams(useLocation().search)

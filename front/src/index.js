@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import reportWebVitals from './reportWebVitals';
+
 import './index.css';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
-import 'react-sortable-tree/style.css';
 
 ReactDOM.render(
   <React.StrictMode>
