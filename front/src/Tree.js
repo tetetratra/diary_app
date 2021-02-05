@@ -4,7 +4,7 @@ import FileExplorerTheme from 'react-sortable-tree-theme-minimal';
 
 const getNodeKey = ({ treeIndex }) => treeIndex
 
-const Tree = ({treeData, setTreeData, edit, setEdit}) => {
+const Tree = ({date, treeData, setTreeData, edit, setEdit}) => {
   const treeSize = () => {
     let count = 0
     walk({
@@ -40,6 +40,7 @@ const Tree = ({treeData, setTreeData, edit, setEdit}) => {
     >
       {edit && <button onClick={() => addChild(undefined)}>+</button>}
       <SortableTree
+        key={date}
         treeData={treeData}
         theme={FileExplorerTheme}
         canDrag={edit}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { walk } from 'react-sortable-tree';
 
 import './Diary.css';
@@ -7,10 +7,10 @@ import Note from './Note.js';
 
 const getNodeKey = ({ treeIndex }) => treeIndex
 
-const Diary = props => {
-  const date = props.date
+const Diary = ({date, initialTreeData, initialValue}) => {
   const [edit, setEdit] = useState(false)
-  const [treeData, setTreeData] = useState([])
+  const [treeData, setTreeData] = useState(initialTreeData)
+  const [value, setValue] = useState(initialValue)
   const toggleEdit = () => {
     if (edit){
       walk({
@@ -25,9 +25,9 @@ const Diary = props => {
     <div>
       <h2>{date.month() + 1}月{date.date()}日</h2>
       <button onClick={toggleEdit}>{edit ? 'save' : 'edit'}</button>
-      <Tree treeData={treeData} setTreeData={setTreeData} edit={edit} setEdit={setEdit} />
+      <Tree date={date} treeData={treeData} setTreeData={setTreeData} edit={edit} setEdit={setEdit} key={date}/>
       <div className={'note'} onClick={!edit && setEdit}>
-        <Note edit={edit}/>
+        <Note edit={edit} value={value} setValue={setValue} key={date}/>
       </div>
     </div>
   )

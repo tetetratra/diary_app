@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { TextField } from '@material-ui/core';
 
-const Note = ({edit}) => {
-  const [value, setValue] = useState('new');
+const Note = ({edit, value, setValue}) => {
   const handleChange = e => {
     setValue(e.target.value)
   }
