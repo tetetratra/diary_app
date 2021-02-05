@@ -10,34 +10,17 @@ const EditContext = createContext(() => {})
 const Diary = props => {
   const date = props.date
   const [edit, setEdit] = useState(false)
-  const [treeData, setTreeData] = useState([])
-  const addChild = rowInfo => {
-    const parentKey = rowInfo ? rowInfo.treeIndex : undefined
-    const ref = createRef(null)
-    const newNode = {
-      title: <TaskInput ref={ref}/>,
-      expanded: true
-    }
-    const newTree = addNodeUnderParent({
-      treeData: treeData,
-      newNode: newNode,
-      parentKey: parentKey,
-      getNodeKey: ({ treeIndex }) => treeIndex
-    })
-    setTreeData(newTree.treeData)
-  }
-  const deleteSelf = rowInfo => {
-    setTreeData(removeNode({
-      treeData: treeData,
-      path: rowInfo.path,
-      getNodeKey: ({ treeIndex }) => treeIndex
-    }).treeData)
-  }
+  const [treeData, setTreeData] = useState([
+    {name: "1"},
+    {name: "2"},
+    {name: "3"}
+  ])
+  const getNodeKey = ({ treeIndex }) => treeIndex
   const toggleEdit = () => {
     if (edit){
       walk({
         treeData: treeData,
-        getNodeKey: ({ treeIndex }) => treeIndex,
+        getNodeKey: getNodeKey,
         callback: n => {console.log(n)}
       })
     }
@@ -47,41 +30,30 @@ const Diary = props => {
     let count = 0
     walk({
       treeData: treeData,
-      getNodeKey: ({ treeIndex }) => treeIndex,
+      getNodeKey: getNodeKey,
       callback: n => {count += 1}
     })
     return count
   }
-  const getNodeKey = ({ treeIndex }) => treeIndex
-
-
-  // const Tree = props => { // 元のコード
-  //   return (
-  //     <SortableTree
-  //       treeData={treeData}
-  //       onChange={treeData => setTreeData(treeData)}
-  //       theme={FileExplorerTheme}
-  //       generateNodeProps={rowInfo => ({
-  //         buttons: [
-  //           (edit && <button onClick={e => addChild(rowInfo)}>+</button>),
-  //           (edit && <button onClick={e => deleteSelf(rowInfo)}>-</button>)
-  //         ]
-  //       })}
-  //       canDrag={edit}
-  //     />
-  //   )
-  // }
-
-  const Tree = props => { // 記事の方
+  const addChild = treeIndex => {
+    const newNode = { name: "" }
+    const newTree = addNodeUnderParent({
+      treeData: treeData,
+      newNode: newNode,
+      parentKey: treeIndex,
+      getNodeKey: getNodeKey
+    })
+    setTreeData(newTree.treeData)
+  }
+  const Tree = props => {
     return (
       <SortableTree
         treeData={treeData}
         onChange={treeData => setTreeData(treeData)}
-        generateNodeProps={({ node, path }) => ({
+        generateNodeProps={({ node, path, treeIndex }) => ({
           title: (
             <form>
               <input
-                style={{ fontSize: "1.1rem" }}
                 value={node.name}
                 onChange={event => {
                   const name = event.target.value;
@@ -92,7 +64,7 @@ const Diary = props => {
                       getNodeKey,
                       newNode: { ...node, name }
                     })
-                  ));
+                  ))
                 }}
               />
             </form>
@@ -102,13 +74,11 @@ const Diary = props => {
     )
   }
 
-
-
   return (
     <div>
       <h2>{date.month() + 1}月{date.date()}日</h2>
       <button onClick={toggleEdit}>{edit ? 'save' : 'edit'}</button>
-      {edit && <button onClick={addChild}>+</button>}
+      {edit && <button onClick={() => addChild(undefined)}>+</button>}
       <div
         className={'task-tree'}
         style={{ height: (treeSize() === 0 ? 62 : treeSize() * 62) + 60 }}
@@ -128,28 +98,22 @@ const Diary = props => {
 }
 
 
-
-
-
-const statusToCheckBox = (status, edit) => (
-  {
-    0: <span>{edit ? '・' : ''}</span>,
-    1: <input type='checkbox'></input>,
-    2: <input type='checkbox' checked></input>
-  }[status]
-)
-
-const TaskInput = React.forwardRef((props, ref) => {
-  const [name, setName] = useState('new')
-  const [status, setStatus] = useState(0)
-  const edit = useContext(EditContext)
-  return (
-    <span ref={ref}>
-      <span onClick={() => edit && setStatus(s => (s + 1) % 3)}>{statusToCheckBox(status, edit)}</span>
-      {edit ? <input type="text" value={name} onChange={e => setName(e.target.value)}></input> : name}
-    </span>
-  )
-})
+  // const Tree = props => { // 元のコード
+  //   return (
+  //     <SortableTree
+  //       treeData={treeData}
+  //       onChange={treeData => setTreeData(treeData)}
+  //       theme={FileExplorerTheme}
+  //       generateNodeProps={rowInfo => ({
+  //         buttons: [
+  //           (edit && <button onClick={e => addChild(rowInfo)}>+</button>),
+  //           (edit && <button onClick={e => deleteSelf(rowInfo)}>-</button>)
+  //         ]
+  //       })}
+  //       canDrag={edit}
+  //     />
+  //   )
+  // }
 
 const Note = ({edit}) => {
   const [value, setValue] = React.useState('new');
