@@ -7,6 +7,8 @@ import './Diary.css';
 
 const EditContext = createContext(() => {})
 
+const getNodeKey = ({ treeIndex }) => treeIndex
+
 const Diary = props => {
   const date = props.date
   const [edit, setEdit] = useState(false)
@@ -15,7 +17,7 @@ const Diary = props => {
     {name: "2"},
     {name: "3"}
   ])
-  const getNodeKey = ({ treeIndex }) => treeIndex
+  // const getNodeKey = ({ node }) => node.id
   const toggleEdit = () => {
     if (edit){
       walk({
@@ -45,35 +47,6 @@ const Diary = props => {
     })
     setTreeData(newTree.treeData)
   }
-  const Tree = props => {
-    return (
-      <SortableTree
-        treeData={treeData}
-        onChange={treeData => setTreeData(treeData)}
-        generateNodeProps={({ node, path, treeIndex }) => ({
-          title: (
-            <form>
-              <input
-                value={node.name}
-                onChange={event => {
-                  const name = event.target.value;
-                  setTreeData(treeDataOld => (
-                    changeNodeAtPath({
-                      treeData: treeDataOld,
-                      path,
-                      getNodeKey,
-                      newNode: { ...node, name }
-                    })
-                  ))
-                }}
-              />
-            </form>
-          )
-        })}
-      />
-    )
-  }
-
   return (
     <div>
       <h2>{date.month() + 1}月{date.date()}日</h2>
@@ -86,7 +59,7 @@ const Diary = props => {
       >
         <EditContext.Provider value={edit}
           children={
-            <Tree />
+            <Tree treeData={treeData} setTreeData={setTreeData}/>
           }
         />
       </div>
@@ -96,6 +69,36 @@ const Diary = props => {
     </div>
   )
 }
+
+const Tree = ({treeData, setTreeData}) => {
+  return (
+    <SortableTree
+      treeData={treeData}
+      onChange={treeData => setTreeData(treeData)}
+      generateNodeProps={({ node, path, treeIndex }) => ({
+        title: (
+          <form>
+            <input
+              value={node.name}
+              onChange={event => {
+                const name = event.target.value;
+                setTreeData(treeDataOld => (
+                  changeNodeAtPath({
+                    treeData: treeDataOld,
+                    path,
+                    getNodeKey,
+                    newNode: { ...node, name }
+                  })
+                ))
+              }}
+            />
+          </form>
+        )
+      })}
+    />
+  )
+}
+
 
 
   // const Tree = props => { // 元のコード
