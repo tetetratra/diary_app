@@ -6,7 +6,7 @@ const Note = ({edit, setEdit, value, setValue}) => {
     setValue(e.target.value)
   }
   return (
-    <div className={'note'} onClick={!edit && setEdit}>{
+    <div className={'note'} onClick={() => setEdit(true)}>{
       edit ? <TextField
         id="outlined-multiline-static"
         multiline
@@ -17,7 +17,7 @@ const Note = ({edit, setEdit, value, setValue}) => {
         onChange={handleChange}
         inputProps={{style: {width: "40rem"} }}
       /> : (
-        value.split("\n\n").map(str => <p dangerouslySetInnerHTML={{__html: str.replace("\n", '<br />')}}></p>)
+        value.split("\n\n").map(str => <p>{str.split("\n").map(s => <>{s}<br /></>)}</p>)
       )
     }</div>
   )

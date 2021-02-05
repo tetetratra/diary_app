@@ -1,11 +1,5 @@
-class NotesController < ApplicationController
+class DiariesController < ApplicationController
   before_action :check_login
-
-  def show
-    @current_user = current_user
-    @date         = Date.parse(params[:id])
-    @note         = @current_user.notes.find_or_initialize_by(date: @date)
-  end
 
   def index
     @current_user = current_user
@@ -31,21 +25,6 @@ class NotesController < ApplicationController
     else
       note.update(text: text, date: date)
     end
-  end
-
-  def csv_download
-    year = params[:year].to_i
-    date_range = Date.new(year, 1, 1)..Date.new(year, 12, 31)
-    bom = "\uFEFF"
-    csv_data = bom + CSV.generate(headers: %w[date text], write_headers: true, force_quotes: true) do |csv|
-      current_user.notes.where(date: date_range).order(:date).each do |note|
-        csv << [
-          note.date,
-          note.text
-        ]
-      end
-    end
-    send_data csv_data, type: 'text/csv; charset=utf8', filename: "notes_#{year}.csv"
   end
 
   private

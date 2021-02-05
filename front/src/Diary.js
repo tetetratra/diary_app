@@ -13,11 +13,9 @@ const Diary = ({date, initialTreeData, initialValue}) => {
   const [value, setValue] = useState(initialValue)
   const toggleEdit = () => {
     if (edit){
-      walk({
-        treeData: treeData,
-        getNodeKey: getNodeKey,
-        callback: n => {console.log(n)}
-      })
+      console.log(treeData)
+      console.log(value)
+      // いい感じにapiに投げる(POST)。通知があると良いかも
     }
     setEdit(e => !e)
   }

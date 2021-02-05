@@ -1,13 +1,13 @@
-create_table "notes", force: :cascade do |t|
-  t.text "text"
+create_table "diaries", force: :cascade, renamed_from: "notes" do |t|
+  t.text "tree"
+  t.text "note", renamed_from: "text"
   t.date "date"
   t.integer "user_id"
-  t.boolean "private"
   t.datetime "updated_at", precision: 6, null: false
   t.datetime "created_at", precision: 6, null: false
 end
 
-create_table "users", force: :cascade do |t|
+create_table "users" do |t|
   t.string "name"
   t.string "password_digest"
   t.string "remember_digest"

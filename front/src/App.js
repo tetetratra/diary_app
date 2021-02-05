@@ -3,7 +3,6 @@ import Moment from 'moment';
 import { extendMoment } from 'moment-range';
 import { useState, useEffect } from 'react';
 
-import logo from './logo.svg';
 import Diary from './Diary.js';
 import Calendar from './Calendar.js';
 
@@ -21,9 +20,10 @@ const Home = ({history}) => {
   useEffect(() => {
     console.log(query)
     alert('fetch!')
-    // asyncでアロー関数して、awaitでfetchすればよさそう
+    // asyncでアロー関数して、awaitでfetchすればよさそう(GET)
     // APIキー, begin, end をもらって、
     // datesの配列を受け取って, initialTreeData, initialValue に配分すればよさそう
+    // ローディングがあるといいかも
     setDiaries(Array.from(dateRange).map(date =>
       <Diary
         date={date}

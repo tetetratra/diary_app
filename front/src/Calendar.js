@@ -6,8 +6,6 @@ import 'moment/locale/ja'
 import 'react-dates/initialize'
 import 'react-dates/lib/css/_datepicker.css'
 
-import './Calendar.css';
-
 const Calendar = ({history, dateFrom, dateTo}) => {
   const [startDate, setStartDate] = useState(null)
   const [endDate, setEndDate] = useState(null)

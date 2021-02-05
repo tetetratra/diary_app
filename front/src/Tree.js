@@ -41,7 +41,7 @@ const Tree = ({date, treeData, setTreeData, edit, setEdit}) => {
     <div
       className={'task-tree'}
       style={{ height: (treeSize() === 0 ? 62 : treeSize() * 62) + 40 }}
-      onClick={!edit && setEdit}
+      onClick={() => setEdit(true)}
     >
       {edit && <i onClick={() => addChild(undefined)} className={'fas fa-plus'} />}
       <SortableTree
