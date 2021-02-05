@@ -22,15 +22,14 @@ const Home = ({history}) => {
       <Diary
         date={date}
         key={date}
-        initialTreeData={ [{name: 'fetched task name', expanded: true}] }
+        initialTreeData={ [{name: 'fetched task name', status: 0, expanded: true}] }
         initialValue={"fetched note value"}
       />
     ))
   }, [Array.from(query.values()).join("-")])
   return (
     <div>
-      <h1><a href={'/'}>md-iary</a></h1>
-      <p>{`${dateRange}`}</p>
+      <h1>md-iary</h1>
       <Calendar history={history} />
       {Diaries}
     </div>

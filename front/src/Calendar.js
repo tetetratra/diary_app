@@ -20,8 +20,15 @@ const Calendar = ({history}) => {
       alert('開始日と終了日を入れてね')
     }
   }
+  const changeRoot = () => {
+    setStartDate(null)
+    setEndDate(null)
+    history.push({ pathname: '/' })
+  }
   return (
     <>
+      <button onClick={changeRoot}>root</button>
+      <br />
       <DateRangePicker
         startDate={startDate}
         startDateId="startDateId"

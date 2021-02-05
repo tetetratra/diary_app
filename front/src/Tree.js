@@ -15,7 +15,7 @@ const Tree = ({date, treeData, setTreeData, edit, setEdit}) => {
     return count
   }
   const addChild = treeIndex => {
-    const newNode = { name: "", expanded: true }
+    const newNode = { name: "", status: 0, expanded: true }
     const newTree = addNodeUnderParent({
       treeData: treeData,
       newNode: newNode,
@@ -51,25 +51,35 @@ const Tree = ({date, treeData, setTreeData, edit, setEdit}) => {
             (edit && <button onClick={() => deleteSelf(path)}>-</button>)
           ],
           title: (
-            edit ? (
-              <form>
-                <input
-                  value={node.name}
-                  onChange={event => {
-                    const name = event.target.value;
-                    setTreeData(treeDataOld => (
-                      changeNodeAtPath({
-                        treeData: treeDataOld,
-                        path,
-                        getNodeKey,
-                        newNode: { ...node, name }
-                      })
-                    ))
-                  }}
-                />
-              </form>
-            ) : (
-              node.name
+            edit ? <>
+              <button onClick={ () =>
+                setTreeData(treeDataOld => (
+                  changeNodeAtPath({
+                    treeData: treeDataOld,
+                    path,
+                    getNodeKey,
+                    newNode: { ...node, status: (node.status + 1) % 3 }
+                  })
+                ))
+              }>
+                {node.status}
+              </button>
+              <input
+                value={node.name}
+                onChange={event => {
+                  const name = event.target.value;
+                  setTreeData(treeDataOld => (
+                    changeNodeAtPath({
+                      treeData: treeDataOld,
+                      path,
+                      getNodeKey,
+                      newNode: { ...node, name }
+                    })
+                  ))
+                }}
+              />
+            </> : (
+              <p>[{node.status}] {node.name}</p>
             )
           )
         })}

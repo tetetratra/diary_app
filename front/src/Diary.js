@@ -26,9 +26,7 @@ const Diary = ({date, initialTreeData, initialValue}) => {
       <h2>{date.month() + 1}月{date.date()}日</h2>
       <button onClick={toggleEdit}>{edit ? 'save' : 'edit'}</button>
       <Tree date={date} treeData={treeData} setTreeData={setTreeData} edit={edit} setEdit={setEdit} key={date}/>
-      <div className={'note'} onClick={!edit && setEdit}>
-        <Note edit={edit} value={value} setValue={setValue} key={date}/>
-      </div>
+      <Note edit={edit} setEdit={setEdit} value={value} setValue={setValue} key={date}/>
     </div>
   )
 }
