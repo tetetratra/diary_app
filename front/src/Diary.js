@@ -1,5 +1,5 @@
 import React, { useState, useContext, createContext, createRef} from 'react';
-import SortableTree, { addNodeUnderParent, removeNode, walk } from 'react-sortable-tree';
+import SortableTree, { addNodeUnderParent, removeNode, walk, changeNodeAtPath } from 'react-sortable-tree';
 import 'react-sortable-tree/style.css';
 import FileExplorerTheme from 'react-sortable-tree-theme-minimal';
 import { TextField } from '@material-ui/core';
@@ -52,6 +52,58 @@ const Diary = props => {
     })
     return count
   }
+  const getNodeKey = ({ treeIndex }) => treeIndex
+
+
+  // const Tree = props => { // 元のコード
+  //   return (
+  //     <SortableTree
+  //       treeData={treeData}
+  //       onChange={treeData => setTreeData(treeData)}
+  //       theme={FileExplorerTheme}
+  //       generateNodeProps={rowInfo => ({
+  //         buttons: [
+  //           (edit && <button onClick={e => addChild(rowInfo)}>+</button>),
+  //           (edit && <button onClick={e => deleteSelf(rowInfo)}>-</button>)
+  //         ]
+  //       })}
+  //       canDrag={edit}
+  //     />
+  //   )
+  // }
+
+  const Tree = props => { // 記事の方
+    return (
+      <SortableTree
+        treeData={treeData}
+        onChange={treeData => setTreeData(treeData)}
+        generateNodeProps={({ node, path }) => ({
+          title: (
+            <form>
+              <input
+                style={{ fontSize: "1.1rem" }}
+                value={node.name}
+                onChange={event => {
+                  const name = event.target.value;
+                  setTreeData(treeDataOld => (
+                    changeNodeAtPath({
+                      treeData: treeDataOld,
+                      path,
+                      getNodeKey,
+                      newNode: { ...node, name }
+                    })
+                  ));
+                }}
+              />
+            </form>
+          )
+        })}
+      />
+    )
+  }
+
+
+
   return (
     <div>
       <h2>{date.month() + 1}月{date.date()}日</h2>
@@ -63,18 +115,9 @@ const Diary = props => {
         onClick={!edit && setEdit}
       >
         <EditContext.Provider value={edit}
-          children={<SortableTree
-            treeData={treeData}
-            onChange={treeData => setTreeData(treeData)}
-            theme={FileExplorerTheme}
-            generateNodeProps={rowInfo => ({
-              buttons: [
-                (edit && <button onClick={e => addChild(rowInfo)}>+</button>),
-                (edit && <button onClick={e => deleteSelf(rowInfo)}>-</button>)
-              ]
-            })}
-            canDrag={edit}
-          />}
+          children={
+            <Tree />
+          }
         />
       </div>
       <div className={'note'} onClick={!edit && setEdit}>
@@ -83,6 +126,10 @@ const Diary = props => {
     </div>
   )
 }
+
+
+
+
 
 const statusToCheckBox = (status, edit) => (
   {
@@ -122,5 +169,6 @@ const Note = ({edit}) => {
     )
   )
 }
+
 
 export default Diary;
